@@ -1,4 +1,4 @@
-const { Transform } = require('stream');
+import { Transform } from 'stream';
 
 const transform = async () => {
     const reverseTransform = new Transform({
