@@ -1,6 +1,10 @@
-const { Worker } = require('worker_threads');
-const os = require('os');
-const path = require('path');
+import { Worker } from 'worker_threads';
+import os from 'os';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const performCalculations = async () => {
     const numCores = os.cpus().length;
@@ -29,7 +33,6 @@ const performCalculations = async () => {
 
     await Promise.all(workers.map(worker => new Promise(resolve => worker.on('exit', resolve))));
     console.log('Final results:', results);
-
 };
 
 performCalculations().catch(error => console.error('Error:', error));
