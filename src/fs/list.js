@@ -1,5 +1,9 @@
-const fs = require('node:fs/promises');
-const path = require('path');
+import { promises as fs } from 'node:fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const list = async () => {
     const sourcePath = path.join(__dirname, 'files');
@@ -13,7 +17,7 @@ const list = async () => {
         const files = await fs.readdir(sourcePath);
 
         for (let file of files) {
-            console.log(JSON.stringify(file))
+            console.log(JSON.stringify(file));
         }
     } catch (error) {
         throw error;

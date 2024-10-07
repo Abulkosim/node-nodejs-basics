@@ -1,5 +1,9 @@
-const fs = require('node:fs/promises');
-const path = require('path');
+import { promises as fs } from 'node:fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const remove = async () => {
     const sourcePath = path.join(__dirname, 'files', 'fileToRemove.txt');
