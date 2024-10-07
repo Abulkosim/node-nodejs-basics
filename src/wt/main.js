@@ -1,38 +1,39 @@
+import { cpus } from 'os';
 import { Worker } from 'worker_threads';
-import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const performCalculations = async () => {
-    const numCores = os.cpus().length;
-    const workerPath = path.join(__dirname, 'worker.js');
+async function createWorkers() {
+    const numCores = cpus().length;
     const workers = [];
-    const results = [];
+    const results = new Array(numCores);
 
     for (let i = 0; i < numCores; i++) {
-        const worker = new Worker(workerPath);
+        const worker = new Worker(path.resolve(__dirname, './worker.js'));
         workers.push(worker);
 
-        worker.on('message', (result) => {
-            if (result.error) {
-                results[i] = { status: 'error', data: null };
-            } else {
-                results[i] = { status: 'resolved', data: result };
-            }
-        });
-
-        worker.on('error', () => {
-            results[i] = { status: 'error', data: null };
-        });
-
         worker.postMessage(10 + i);
+
+        worker.on('message', (message) => {
+            results[i] = message;
+            checkIfAllWorkersFinished();
+        });
+
+        worker.on('error', (err) => {
+            console.error(err);
+            results[i] = { status: 'error', data: null };
+            checkIfAllWorkersFinished();
+        });
     }
 
-    await Promise.all(workers.map(worker => new Promise(resolve => worker.on('exit', resolve))));
-    console.log('Final results:', results);
-};
+    function checkIfAllWorkersFinished() {
+        if (results.filter(result => result !== undefined).length === numCores) {
+            console.log(results);
+        }
+    }
+}
 
-performCalculations().catch(error => console.error('Error:', error));
+createWorkers();

@@ -1,17 +1,14 @@
 import { parentPort } from 'worker_threads';
 
-const nthFibonacci = (n) => n < 2 ? n : nthFibonacci(n - 1) + nthFibonacci(n - 2);
+function compute(number) {
+    return number * 2;
+}
 
-const sendResult = (result) => {
-    parentPort.postMessage(result);
-};
-
-parentPort.on('message', (n) => {
+parentPort.on('message', (data) => {
     try {
-        console.log(`Worker received: ${n}`);
-        const result = nthFibonacci(n);
-        sendResult(result);
+        const result = compute(data);
+        parentPort.postMessage({ status: 'resolved', data: result });
     } catch (error) {
-        parentPort.postMessage({ error: error.message });
+        parentPort.postMessage({ status: 'error', data: null });
     }
 });
