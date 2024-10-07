@@ -1,6 +1,10 @@
-const fs = require('fs');
-const crypto = require('crypto');
-const path = require('path');
+import fs from 'node:fs';
+import crypto from 'crypto';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const calculateHash = async () => {
     const filePath = path.join(__dirname, 'files/fileToCalculateHashFor.txt');
