@@ -1,6 +1,10 @@
-const { spawn } = require('child_process');
-const path = require('path');
-const readline = require('readline');
+import { spawn } from 'child_process';
+import path from 'path';
+import readline from 'readline';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const spawnChildProcess = async (args) => {
     const scriptPath = path.join(__dirname, 'files', 'script.js');
